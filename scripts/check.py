@@ -64,6 +64,7 @@ strict_mode = arguments.strict
 
 for filename in arguments.path:
     logger.debug("filename: {}".format(filename))
+    print(filename)
     try:
 
         ## dict_raise_on_duplicates raises error on duplicate keys in geojson
