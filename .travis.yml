@@ -8,8 +8,8 @@ script:
    - make check
    - git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
    - git fetch
-   - echo $(git diff --name-only --diff-filter=AM gh-pages...$TRAVIS_BRANCH)
-   - python scripts/check.py --strict $(git diff --name-only --diff-filter=AM HEAD...$TRAVIS_BRANCH)
+   - echo $(git diff --name-only --diff-filter=AM origin/gh-pages...$TRAVIS_BRANCH)
+   - python scripts/check.py --strict $(git diff --name-only --diff-filter=AM origin/gh-pages...$TRAVIS_BRANCH)
 before_deploy:
     - make clean
     - make
