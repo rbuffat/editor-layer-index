@@ -7,7 +7,7 @@ branches:
 script:
    - make check
    # See https://github.com/travis-ci/travis-ci/issues/6069
-   - git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+   - git config remote.origin.fetch "+refs/heads/gh-pages:refs/remotes/origin/gh-pages"
    - git fetch
    - echo $(git diff --name-only --diff-filter=AM origin/gh-pages...$TRAVIS_BRANCH)
    - python scripts/check.py --strict $(git diff --name-only --diff-filter=AM origin/gh-pages...$TRAVIS_BRANCH)
