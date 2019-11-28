@@ -10,7 +10,7 @@ script:
    - git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
    - git fetch
    - echo $(git diff --name-only --diff-filter=AM origin/gh-pages...$TRAVIS_BRANCH)
-   - python -v -v scripts/check.py --strict $(git diff --name-only --diff-filter=AM origin/gh-pages...$TRAVIS_BRANCH)
+   - python -v scripts/check.py --strict $(git diff --name-only --diff-filter=AM origin/gh-pages...$TRAVIS_BRANCH)
 before_deploy:
     - make clean
     - make
