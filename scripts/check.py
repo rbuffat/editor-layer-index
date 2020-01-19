@@ -186,6 +186,22 @@ for filename in arguments.path:
                 raise ValidationError("{}: privacy policy url {} is not reachable: {}".format(
                     filename, source['properties']['privacy_policy_url'], str(e)))
 
+        ## Imagery category
+        if strict_mode:
+
+            imagery_categories = schema['properties']['properties']['properties']['category']['enum']
+
+            if 'category' not in source['properties']:
+                raise ValidationError("Missing category parameter in {}".format(filename))
+
+            elif source['properties']['category'] not in imagery_categories:
+                raise ValidationError("Imagery category {} other than {} in {}".format(
+                    source['properties']['category'],
+                    ", ".join(imagery_categories),
+                    filename))
+
+
+
     except ValidationError as e:
         borkenbuild = True
         logger.exception("Error in {} : {}".format(filename, e))
