@@ -65,6 +65,10 @@ spacesave = 0
 
 strict_mode = arguments.strict
 
+print(os.environ['TRAVIS_COMMIT_MESSAGE'])
+
+a = 5 / 0
+
 headers = {'User-Agent': 'Mozilla/5.0 (compatible; MSIE 6.0; OpenStreetMap Editor Layer Index CI check)'}
 
 for filename in arguments.path:
