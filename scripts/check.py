@@ -65,7 +65,11 @@ spacesave = 0
 
 strict_mode = arguments.strict
 
-print(os.environ['TRAVIS_COMMIT_MESSAGE'])
+# Disable strict mode if @skipstrict is in the commit message
+if "@skipstrict" in os.environ['TRAVIS_COMMIT_MESSAGE']:
+    strict_mode = False
+
+print("strict mode: ", strict_mode)
 
 a = 5 / 0
 
