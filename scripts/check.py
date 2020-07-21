@@ -67,7 +67,7 @@ strict_mode = arguments.strict
 
 # Disable strict mode if @skipstrict is in the commit message
 if "@skipstrict" in os.environ['TRAVIS_COMMIT_MESSAGE']:
-    print("disable strict")
+    print("disable strict!")
     strict_mode = False
 
 print("strict mode: ", strict_mode)
