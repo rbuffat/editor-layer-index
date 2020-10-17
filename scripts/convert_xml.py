@@ -584,7 +584,7 @@ def add_source(source_path, root):
 
     if 'icon' in properties:
         icon = ET.SubElement(entry, "icon")
-        icon.text = properties['icon']
+        icon.text = CDATA(properties['icon'])
 
     if 'country_code' in properties:
         if properties['country_code'] in country_code_list:
@@ -593,7 +593,7 @@ def add_source(source_path, root):
 
     if 'license_url' in properties:
         permission_ref = ET.SubElement(entry, "permission-ref")
-        permission_ref.text = properties['license_url']
+        permission_ref.text = CDATA(properties['license_url'])
 
     if 'description' in properties:
         description = ET.SubElement(entry, "description")
