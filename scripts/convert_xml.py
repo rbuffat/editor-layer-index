@@ -587,9 +587,9 @@ def add_source(source_path, root):
         icon.text = properties['icon']
 
     if 'country_code' in properties:
-        # if properties['country_code'] in country_code_list:
-        country_code = ET.SubElement(entry, "country-code")
-        country_code.text = properties['country_code']
+        if properties['country_code'] in country_code_list:
+            country_code = ET.SubElement(entry, "country-code")
+            country_code.text = properties['country_code']
 
     if 'license_url' in properties:
         permission_ref = ET.SubElement(entry, "permission-ref")
