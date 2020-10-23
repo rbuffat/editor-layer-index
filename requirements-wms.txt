@@ -1,0 +1,8 @@
+pillow==8.0.1
+aiohttp==3.6.3
+aiofiles==0.5.0
+imagehash==4.1.0
+mercantile==1.1.6
+shapely==1.7.1
+pyproj==2.6.1.post1
+
