@@ -1,6 +1,8 @@
 name: ELI WMS sync
 
-on: [push, pull_request]
+on:
+    schedule:
+        -   cron: '0 0 * * *'
 
 jobs:
     build:
