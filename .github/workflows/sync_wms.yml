@@ -2,7 +2,7 @@ name: ELI WMS sync
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 0 * * 6'
 
 jobs:
   build:
@@ -37,5 +37,5 @@ jobs:
           commit-message: Sync WMS sources [skip travis]
           delete-branch: true
           draft: false
-          title: WMS Sync
-          body: Automatic WMS Sync by scripts/sync_wms.py
+          title: WMS Sync Bot
+          body: Update WMS and available_projections of WMS sources using scripts/sync_wms.py. Delete .github/workflows/sync_wms.yml to stop.
