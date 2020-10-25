@@ -1,39 +1,39 @@
-name: ELI WMS sync
+name: ELI WMS sync PR
 
 on: [push, pull_request]
 
 jobs:
-    build:
-        name: WMS_sync
+  build:
+    name: WMS_sync_PR
 
-        runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-        steps:
-            -   uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-            -   name: Set up Python
-                uses: actions/setup-python@v2
-                with:
-                    python-version: '3.8'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
 
-            -   name: Install Python dependencies
-                run: |
-                    python -m pip install --upgrade pip
-                    python -m pip install -r requirements-wms.txt
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-wms.txt
 
-            -   name: Run WMS sync
-                run: |
-                    python scripts/sync_wms.py sources
+      - name: Run WMS sync
+        run: |
+          python scripts/sync_wms.py sources
 
-            -   name: Test
-                run: |
-                    python scripts/check.py $(shell find sources -type f -name '*.geojson')
+      - name: Test
+        run: |
+          python scripts/check.py $(shell find sources -type f -name '*.geojson')
 
-            -   name: Create Pull Request
-                uses: peter-evans/create-pull-request@v3
-                with:
-                    commit-message: Sync WMS sources
-                    delete-branch: true
-                    draft: false
-                    title: WMS Sync [travis skip]
-                    body: Automatic WMS Sync by scripts/sync_wms.py
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Sync WMS sources
+          delete-branch: true
+          draft: false
+          title: WMS Sync [travis skip]
+          body: Automatic WMS Sync by scripts/sync_wms.py
