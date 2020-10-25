@@ -41,6 +41,8 @@ RequestResult = namedtuple('RequestResultCache',
                            ['status', 'text', 'exception'],
                            defaults=[None, None, None])
 
+ZOOM_LEVEL = 14
+
 
 def compare_projs(old_projs, new_projs):
     """ Compare two sets of projections """
@@ -390,7 +392,7 @@ async def process_source(filename, session: ClientSession):
                                  available_projections=source['properties']['available_projections'],
                                  lon=pt.x,
                                  lat=pt.y,
-                                 zoom=14,
+                                 zoom=ZOOM_LEVEL,
                                  session=session,
                                  messages=original_img_messages)
     if image_hash is None:
@@ -418,7 +420,7 @@ async def process_source(filename, session: ClientSession):
                                               available_projections=[EPSG],
                                               lon=pt.x,
                                               lat=pt.y,
-                                              zoom=14,
+                                              zoom=ZOOM_LEVEL,
                                               session=session,
                                               messages=[])
             if epsg_image_hash == image_hash:
@@ -430,7 +432,7 @@ async def process_source(filename, session: ClientSession):
                                      available_projections=result['available_projections'],
                                      lon=pt.x,
                                      lat=pt.y,
-                                     zoom=15,
+                                     zoom=ZOOM_LEVEL,
                                      session=session,
                                      messages=new_img_messages)
 
