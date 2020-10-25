@@ -2,7 +2,7 @@ name: ELI WMS sync
 
 on:
     schedule:
-        -   cron: '0 0 * * *'
+        -   cron: '0 * * * *'
 
 jobs:
     build:
@@ -27,11 +27,15 @@ jobs:
                 run: |
                     python scripts/sync_wms.py sources
 
+            -   name: Test
+                run: |
+                    python scripts/check.py $(shell find sources -type f -name '*.geojson')
+
             -   name: Create Pull Request
                 uses: peter-evans/create-pull-request@v3
                 with:
                     commit-message: Sync WMS sources
                     delete-branch: true
                     draft: false
-                    title: WMS update
-                    body: WMS Sync by scripts/sync_wms.py
+                    title: WMS Sync [travis skip]
+                    body: Automatic WMS Sync by scripts/sync_wms.py
