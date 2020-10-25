@@ -53,13 +53,13 @@ def compare_urls(old_url, new_url):
     """ Compare URLs"""
     old_parameters = parse_qsl(urlparse(old_url.lower()).query, keep_blank_values=True)
     new_parameters = parse_qsl(urlparse(new_url.lower()).query, keep_blank_values=True)
-    # Fail if old url contains duplictaed parameters
+    # Fail if old url contains duplicated parameters
     if not len(set(old_parameters)) == len(old_parameters):
         return False
     return set(old_parameters) == set(new_parameters)
 
 
-async def get_url(url: str, session: ClientSession, with_text=False, headers=None):
+async def get_url(url: str, session: ClientSession, with_text=False, with_data=False, headers=None):
     """ Ensure that only one request is sent to a domain at one point in time and that the same url is not
     queried more than once.
     """
@@ -73,8 +73,8 @@ async def get_url(url: str, session: ClientSession, with_text=False, headers=Non
         lock = domain_locks[o.netloc]
 
     async with lock:
-        for i in range(3):
-            if url not in response_cache:
+        if url not in response_cache:
+            for i in range(3):
                 try:
                     logging.debug("GET {}".format(url))
                     async with session.request(method="GET", url=url, ssl=False, headers=headers) as response:
@@ -85,6 +85,9 @@ async def get_url(url: str, session: ClientSession, with_text=False, headers=Non
                             except:
                                 text = await response.read()
                             response_cache[url] = RequestResult(status=status, text=text)
+                        elif with_data:
+                            data = await response.read()
+                            response_cache[url] = RequestResult(status=status, text=data)
                         else:
                             response_cache[url] = RequestResult(status=status)
                 except asyncio.TimeoutError:
@@ -92,10 +95,11 @@ async def get_url(url: str, session: ClientSession, with_text=False, headers=Non
                 except Exception as e:
                     logging.debug("Error for: {} ({})".format(url, str(e)))
                     response_cache[url] = RequestResult(exception="Exception {} for: {}".format(str(e), url))
-            else:
-                logging.debug("Cached {}".format(url))
-            if RequestResult.exception is None:
-                break
+                if RequestResult.exception is None:
+                    break
+        else:
+            logging.debug("Cached {}".format(url))
+
         return response_cache[url]
 
 
@@ -443,7 +447,11 @@ async def process_source(filename, session: ClientSession):
     # Only sources are updated where the new query returns the same image
     if not image_hash == new_image_hash:
         logging.info(
-            "Image hash not the same for: {}: {} {} ".format(filename, image_hash, new_image_hash))
+            "Image hash not the same for: {}: {} {} | {} | {}".format(filename,
+                                                                      image_hash,
+                                                                      new_image_hash,
+                                                                      "||".join(original_img_messages),
+                                                                      "||".join(new_img_messages)))
 
     # Servers that report a lot of projection may be configured wrongly
     # Check for CRS:84, EPSG:3857, EPSG:4326 and keep existing projections if still advertised
