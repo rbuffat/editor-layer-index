@@ -42,6 +42,21 @@ RequestResult = namedtuple('RequestResultCache',
                            defaults=[None, None, None])
 
 
+def compare_projs(old_projs, new_projs):
+    """ Compare two sets of projections """
+    return set(old_projs) == set(new_projs)
+
+
+def compare_urls(old_url, new_url):
+    """ Compare URLs"""
+    old_parameters = parse_qsl(urlparse(old_url.lower()).query, keep_blank_values=True)
+    new_parameters = parse_qsl(urlparse(new_url.lower()).query, keep_blank_values=True)
+    # Fail if old url contains duplictaed parameters
+    if not len(set(old_parameters)) == len(old_parameters):
+        return False
+    return set(old_parameters) == set(new_parameters)
+
+
 async def get_url(url: str, session: ClientSession, with_text=False, headers=None):
     """ Ensure that only one request is sent to a domain at one point in time and that the same url is not
     queried more than once.
@@ -375,7 +390,7 @@ async def process_source(filename, session: ClientSession):
                                  available_projections=source['properties']['available_projections'],
                                  lon=pt.x,
                                  lat=pt.y,
-                                 zoom=15,
+                                 zoom=14,
                                  session=session,
                                  messages=original_img_messages)
     if image_hash is None:
@@ -396,14 +411,14 @@ async def process_source(filename, session: ClientSession):
         logging.info("Not possible to update wms url for {}: {}".format(filename, "||".join(wms_messages)))
         return
 
-    # Test if selected projections previously included and not advertised anymore still works
+    # Test if selected projections work despite not being advertised
     for EPSG in {'EPSG:3857', 'EPSG:4326'}:
-        if EPSG in source['properties']['available_projections'] and EPSG not in result['available_projections']:
+        if EPSG not in result['available_projections']:
             epsg_image_hash = await get_image(url=result['url'],
                                               available_projections=[EPSG],
                                               lon=pt.x,
                                               lat=pt.y,
-                                              zoom=15,
+                                              zoom=14,
                                               session=session,
                                               messages=[])
             if epsg_image_hash == image_hash:
@@ -447,9 +462,12 @@ async def process_source(filename, session: ClientSession):
             if epsg_str in result['available_projections']:
                 result['available_projections'].remove(epsg_str)
 
-    source['properties']['url'] = result['url']
-    source['properties']['available_projections'] = list(
-        sorted(result['available_projections'], key=lambda x: (x.split(':')[0], int(x.split(':')[1]))))
+    # Check if only formatting has changes
+    if not compare_urls(source['properties']['url'], result['url']):
+        source['properties']['url'] = result['url']
+    if not compare_projs(source['properties']['available_projections'], result['available_projections']):
+        source['properties']['available_projections'] = list(
+            sorted(result['available_projections'], key=lambda x: (x.split(':')[0], int(x.split(':')[1]))))
 
     with open(filename, 'w', encoding='utf-8') as out:
         json.dump(source, out, indent=4, sort_keys=False, ensure_ascii=False)
@@ -459,7 +477,7 @@ async def process_source(filename, session: ClientSession):
 async def start_processing(sources_directory):
     headers = {
         'User-Agent': 'Mozilla/5.0 (compatible; MSIE 6.0; ELI WMS sync )'}
-    timeout = aiohttp.ClientTimeout(total=90)
+    timeout = aiohttp.ClientTimeout(total=180)
 
     async with ClientSession(headers=headers, timeout=timeout) as session:
         jobs = []
