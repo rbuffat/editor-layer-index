@@ -27,7 +27,7 @@ jobs:
 
       - name: Test
         run: |
-          python scripts/check.py $(shell find sources -type f -name '*.geojson')
+          python scripts/check.py $(find sources -type f -name '*.geojson')
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
