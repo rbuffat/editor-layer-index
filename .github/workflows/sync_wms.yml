@@ -34,8 +34,8 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: Sync WMS sources
+          commit-message: Sync WMS sources [skip travis]
           delete-branch: true
           draft: false
-          title: WMS Sync [skip travis]
+          title: WMS Sync $(date +%F)
           body: Automatic WMS Sync by scripts/sync_wms.py
