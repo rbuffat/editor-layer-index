@@ -192,8 +192,8 @@
     },
     "properties": {
         "available_projections": [
-            "EPSG:3857",
-            "EPSG:4326"
+            "EPSG:4326",
+            "EPSG:31370"
         ],
         "category": "other",
         "country_code": "BE",
