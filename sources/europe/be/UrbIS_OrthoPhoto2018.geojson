@@ -261,7 +261,7 @@
     "properties": {
         "attribution": {
             "required": true,
-            "text": "Realized by means of Brussels UrbIS\u00ae\u00a9 - Distribution & Copyright CIRB"
+            "text": "Realized by means of Brussels UrbIS®© - Distribution & Copyright CIRB"
         },
         "available_projections": [
             "CRS:84",
