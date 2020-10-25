@@ -37,5 +37,5 @@ jobs:
           commit-message: Sync WMS sources
           delete-branch: true
           draft: false
-          title: WMS Sync [travis skip]
+          title: WMS Sync [skip travis]
           body: Automatic WMS Sync by scripts/sync_wms.py
