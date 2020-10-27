@@ -111,10 +111,6 @@ async def process_source(filename, session):
     # Skip non tms layers
     if not source['properties']['type'] == 'tms':
         return
-    if not 'country_code' in source['properties'] or not source['properties']['country_code'] == 'CZ':
-        return
-    if not ".zby.cz/tiles_cuzk.php" in source['properties']['url']:
-        return
 
     tms_url = source['properties']['url']
     parameters = {}
