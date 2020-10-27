@@ -170,7 +170,7 @@ async def process_source(filename, session):
     min_zoom = None
     for zoom in range(20):
         image_hash = await test_zoom(zoom)
-        logging.info("{}: {}: {}".format(source['properties']['name'], zoom, image_hash))
+        logging.debug("{}: {}: {}".format(source['properties']['name'], zoom, image_hash))
         if image_hash is not None:
             # If previous image is the same as current, the zoom level is not useful
             if len(previous_images) > 0 and previous_images[-1] is not None and not previous_images[-1] == image_hash:
