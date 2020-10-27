@@ -173,14 +173,14 @@ async def process_source(filename, session):
     previous_images = []
     min_zoom = None
     for zoom in range(20):
-        imagehash = await test_zoom(zoom)
-        logging.info("{}: {}: {}".format(source['properties']['name'], zoom, imagehash))
-        if imagehash is not None:
+        image_hash = await test_zoom(zoom)
+        logging.info("{}: {}: {}".format(source['properties']['name'], zoom, image_hash))
+        if image_hash is not None:
             # If previous image is the same as current, the zoom level is not useful
-            if len(previous_images) > 0 and previous_images[-1] is not None and not previous_images[-1] == imagehash:
+            if len(previous_images) > 0 and previous_images[-1] is not None and not previous_images[-1] == image_hash:
                 min_zoom = len(previous_images)
                 break
-        previous_images.append(imagehash)
+        previous_images.append(image_hash)
 
     # Check against source if we found at least one image
     if min_zoom is not None:
