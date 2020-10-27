@@ -64,7 +64,7 @@ async def get_url(url: str, session: ClientSession, with_text=False, with_data=F
 
     async with lock:
         if url not in response_cache:
-            for i in range(3):
+            for i in range(2):
                 try:
                     logging.debug("GET {}".format(url))
                     async with session.request(method="GET", url=url, ssl=False, headers=headers) as response:
@@ -173,8 +173,10 @@ async def process_source(filename, session):
             min_zoom = zoom
             break
 
+    # Check against source if we found at least one image
     if min_zoom is not None:
 
+        # zoom 0 is equal to when no min_zoom level is set
         if min_zoom == 0:
             min_zoom = None
 
@@ -182,11 +184,16 @@ async def process_source(filename, session):
         if 'min_zoom' in source['properties']:
             original_min_zoom = source['properties']['min_zoom']
 
+        # Do nothing if exisiting value is same as tested value
         if not min_zoom == original_min_zoom:
             logging.info("Update {}: {}, previously: {}".format(source['properties']['name'],
                                                                 min_zoom,
                                                                 original_min_zoom))
-            source['properties']['min_zoom'] = min_zoom
+            if min_zoom is None:
+                source['properties'].pop('min_zoom', None)
+            else:
+                source['properties']['min_zoom'] = min_zoom
+
             with open(filename, 'w', encoding='utf-8') as out:
                 json.dump(source, out, indent=4, sort_keys=False, ensure_ascii=False)
                 out.write("\n")
@@ -196,7 +203,7 @@ async def process_source(filename, session):
 async def start_processing(sources_directory):
     headers = {
         'User-Agent': 'Mozilla/5.0 (compatible; MSIE 6.0; ELI WMS sync )'}
-    timeout = aiohttp.ClientTimeout(total=30)
+    timeout = aiohttp.ClientTimeout(total=10)
 
     async with ClientSession(headers=headers, timeout=timeout) as session:
         jobs = []

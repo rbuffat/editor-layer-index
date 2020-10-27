@@ -24,7 +24,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-wms_sync.txt
 
-      - name: Run WMS sync
+      - name: Run TMS sync
         run: |
           python scripts/sync_tms_minzoom.py sources
 
@@ -35,8 +35,8 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: Sync WMS sources [skip travis]
+          commit-message: Sync TMS sources [skip travis]
           delete-branch: true
           draft: false
-          title: WMS Sync Bot
-          body: Update url and available_projections of WMS sources using scripts/sync_wms.py. Sources are tested with scripts/check.py before PR is created. Delete .github/workflows/sync_wms.yml to stop.
+          title: TMS Sync Bot
+          body: Update min_zoom of TMS sources using scripts/sync_tms_minzoom.py. Sources are tested with scripts/check.py before PR is created. Delete .github/workflows/sync_wms.yml to stop.
