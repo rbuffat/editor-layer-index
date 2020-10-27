@@ -111,6 +111,10 @@ async def process_source(filename, session):
     # Skip non tms layers
     if not source['properties']['type'] == 'tms':
         return
+    if not 'country_code' in source['properties'] or not source['properties']['country_code'] == 'CZ':
+        return
+    if not ".zby.cz/tiles_cuzk.php" in source['properties']['url']:
+        return
 
     tms_url = source['properties']['url']
     parameters = {}
@@ -159,19 +163,24 @@ async def process_source(filename, session):
                 img = Image.open(BytesIO(response.text))
                 image_hash = imagehash.average_hash(img)
                 if str(image_hash) not in {'0000000000000000', 'FFFFFFFFFFFFFFFF'}:
-                    return True
+                    return image_hash
             except Exception as e:
                 logging.info("Error fetching image for {} : {} : {}".format(source['properties']['name'],
                                                                             query_url,
                                                                             str(e)))
-        return False
+        return None
 
+    previous_images = []
     min_zoom = None
     for zoom in range(20):
-        image_exists = await test_zoom(zoom)
-        if image_exists:
-            min_zoom = zoom
-            break
+        imagehash = await test_zoom(zoom)
+        logging.info("{}: {}: {}".format(source['properties']['name'], zoom, imagehash))
+        if imagehash is not None:
+            # If previous image is the same as current, the zoom level is not useful
+            if len(previous_images) > 0 and previous_images[-1] is not None and not previous_images[-1] == imagehash:
+                min_zoom = len(previous_images)
+                break
+        previous_images.append(imagehash)
 
     # Check against source if we found at least one image
     if min_zoom is not None:
