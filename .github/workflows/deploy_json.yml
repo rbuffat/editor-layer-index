@@ -7,16 +7,13 @@ on:
 
 jobs:
     build:
-        name: Deploy XML
+        name: Deploy JSON
 
         runs-on: ubuntu-latest
 
         steps:
             -   name: Checkout code
                 uses: actions/checkout@v2
-
-            -   name: Install xmllint
-                run: sudo apt-get install libxml2-utils
 
             -   name: Set up Python
                 uses: actions/setup-python@v2
@@ -32,15 +29,12 @@ jobs:
                 run: python scripts/check.py
 
             -   name: Create XML
-                run: python scripts/convert_xml.py sources
-
-            -   name: Run xmllint
-                run: xmllint --schema scripts/maps.xsd imagery.xml --noout
+                run: python scripts/convert_geojson_to_legacyjson.py $(find sources -type f -name '*.geojson')
 
             -   name: Create deploy folder
                 run: |
                     mkdir deploy
-                    mv imagery.xml deploy
+                    mv imagery.json deploy
 
             -   name: Deploy 🚀
                 uses: JamesIves/github-pages-deploy-action@3.7.1
