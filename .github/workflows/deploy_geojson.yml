@@ -3,7 +3,7 @@ name: Deploy GeoJSON
 on:
     push:
         branches:
-            - pages
+            - gh-pages
 
 jobs:
     build:
