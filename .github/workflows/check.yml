@@ -1,4 +1,4 @@
-name: Check
+name: Check PR
 
 on: [ pull_request ]
 
@@ -23,7 +23,7 @@ jobs:
                     python -m pip install -r requirements.txt
 
             -   name: Validate input
-                run: python scripts/check.py
+                run: python scripts/check.py $(find sources -type f -name '*.geojson')
 
             -   name: Stricht check
                 run: |

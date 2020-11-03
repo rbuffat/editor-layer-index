@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy JSON
 
 on:
     push:
@@ -26,7 +26,7 @@ jobs:
                     python -m pip install -r requirements.txt
 
             -   name: Validate input
-                run: python scripts/check.py
+                run: python scripts/check.py $(find sources -type f -name '*.geojson')
 
             -   name: Create XML
                 run: python scripts/convert_geojson_to_legacyjson.py $(find sources -type f -name '*.geojson')
