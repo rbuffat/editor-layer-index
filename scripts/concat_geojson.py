@@ -22,7 +22,6 @@ collection = {
     "features": source_features
 }
 
-output = json.dumps(collection, sort_keys=True, ensure_ascii=False, separators=(',', ':'))
-if sys.version_info.major == 2:
-    output = output.encode('utf8')
-print(output)
+with open('imagery.geojson', 'w', encoding='utf-8') as out:
+    json.dump(collection, out, sort_keys=True, ensure_ascii=False, separators=(',', ':'))
+    out.write("\n")
