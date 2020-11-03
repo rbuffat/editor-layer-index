@@ -1,0 +1,26 @@
+name: Check push
+
+on: [ push ]
+
+jobs:
+    build:
+        name: Check push
+
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v2
+
+            -   name: Set up Python
+                uses: actions/setup-python@v2
+                with:
+                    python-version: 3.8
+
+            -   name: Install Python dependencies
+                run: |
+                    python -m pip install -U pip wheel
+                    python -m pip install -r requirements.txt
+
+            -   name: Validate input
+                run: python scripts/check.py $(find sources -type f -name '*.geojson')
