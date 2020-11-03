@@ -1,4 +1,4 @@
-name: Deploy GeoJSON
+name: Deploy
 
 on:
     push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
     build:
-        name: Deploy GeoJSON
+        name: Deploy
 
         runs-on: ubuntu-latest
 
@@ -31,10 +31,21 @@ jobs:
             -   name: Create GeoJSON
                 run: python scripts/concat_geojson.py $(find sources -type f -name '*.geojson')
 
+            -   name: Create JSON
+                run: python scripts/convert_geojson_to_legacyjson.py $(find sources -type f -name '*.geojson')
+
+            -   name: Create XML
+                run: python scripts/convert_xml.py sources
+
+            -   name: Validate XML
+                run: xmllint --schema scripts/maps.xsd imagery.xml --noout
+
             -   name: Create deploy folder
                 run: |
                     mkdir deploy
                     mv imagery.geojson deploy
+                    mv imagery.json deploy
+                    mv imagery.xml deploy
 
             -   name: Deploy 🚀
                 uses: JamesIves/github-pages-deploy-action@3.7.1
