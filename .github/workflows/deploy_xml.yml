@@ -30,9 +30,9 @@ jobs:
                 run: xmllint --schema scripts/maps.xsd imagery.xml --noout
 
             -   name: Create deploy folder
-                run:
-                    -  mkdir deploy
-                    -  mv imagery.xml deploy
+                run: |
+                    mkdir deploy
+                    mv imagery.xml deploy
 
             -   name: Deploy 🚀
                 uses: JamesIves/github-pages-deploy-action@3.7.1
