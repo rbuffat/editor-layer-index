@@ -173,10 +173,10 @@ async def get_image(url, available_projections, lon, lat, zoom, session, message
     bounds = list(mercantile.bounds(tile))
 
     proj = None
-    if 'EPSG:4326' in available_projections:
-        proj = 'EPSG:4326'
-    elif 'EPSG:3857' in available_projections:
+    if 'EPSG:3857' in available_projections:
         proj = 'EPSG:3857'
+    elif 'EPSG:4326' in available_projections:
+        proj = 'EPSG:4326'
     else:
         for proj in available_projections:
             try:
@@ -188,12 +188,14 @@ async def get_image(url, available_projections, lon, lat, zoom, session, message
                               area_of_use.east,
                               area_of_use.north)
                 if not Point(lon, lat).wihin(crs_box):
+                    proj = None
                     continue
             except:
+                proj = None
                 continue
             break
     if proj is None:
-        messages.append("No projection left: {}".format(available_projections))
+        messages.append("No projection could be used: {}".format(available_projections))
         return None
 
     crs_from = CRS.from_string("epsg:4326")
@@ -494,8 +496,7 @@ async def process_source(filename, session: ClientSession):
         # These image hashes indicate that the downloaded image is not useful to determine
         # if the updated query returns the same image
         logging.info(
-            "ImageHash {} not useful for: {} || {}".format(str(image_hash), filename,
-                                                           " || ".join(original_img_messages)))
+            "ImageHash {} not useful for: {} || {}".format(str(image_hash), filename, " || ".join(original_img_messages)))
         return
 
     # Update wms
