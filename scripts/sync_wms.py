@@ -7,7 +7,7 @@ import logging
 import os
 import re
 import xml.etree.ElementTree as ET
-from collections import OrderedDict, namedtuple
+from collections import OrderedDict, namedtuple, defaultdict
 from io import StringIO
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 import aiohttp
@@ -82,6 +82,14 @@ def compare_urls(old_url, new_url):
     if not len(set(old_parameters)) == len(old_parameters):
         return False
     return set(old_parameters) == set(new_parameters)
+
+
+def max_count(elements):
+    """ Return the occurence of the most common element"""
+    counts = defaultdict(int)
+    for el in elements:
+        counts[el] += 1
+    return max(counts.items(), key=lambda x: x[1])[1]
 
 
 async def get_url(url: str, session: ClientSession, with_text=False, with_data=False, headers=None):
@@ -482,7 +490,7 @@ async def process_source(filename, session: ClientSession):
         # We are finished if it was not possible to get the image
         return
 
-    if str(image_hash) in {'0000000000000000', 'FFFFFFFFFFFFFFFF'}:
+    if max_count(str(image_hash)) == 16:
         # These image hashes indicate that the downloaded image is not useful to determine
         # if the updated query returns the same image
         logging.info(
