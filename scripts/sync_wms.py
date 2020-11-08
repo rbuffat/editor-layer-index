@@ -14,7 +14,7 @@ import aiohttp
 import imagehash
 import mercantile
 from PIL import Image
-from shapely.geometry import shape
+from shapely.geometry import shape, box, Point
 from pyproj import Transformer
 from pyproj.crs import CRS
 import aiofiles
@@ -42,7 +42,6 @@ RequestResult = namedtuple('RequestResultCache',
                            defaults=[None, None, None])
 
 ZOOM_LEVEL = 14
-
 
 # Before adding a new WMS version, it should be checked if every consumer supports it!
 supported_wms_versions = ['1.3.0', '1.1.1', '1.1.0', '1.0.0']
@@ -173,7 +172,15 @@ async def get_image(url, available_projections, lon, lat, zoom, session, message
     else:
         for proj in available_projections:
             try:
-                CRS.from_string(proj)
+                crs = CRS.from_string(proj)
+                # Check if crs is within area of use
+                area_of_use = crs.area_of_use
+                crs_box = box(area_of_use.west,
+                              area_of_use.south,
+                              area_of_use.east,
+                              area_of_use.north)
+                if not Point(lon, lat).wihin(crs_box):
+                    continue
             except:
                 continue
             break
@@ -479,7 +486,8 @@ async def process_source(filename, session: ClientSession):
         # These image hashes indicate that the downloaded image is not useful to determine
         # if the updated query returns the same image
         logging.info(
-            "ImageHash {} not useful for: {} || {}".format(str(image_hash), filename, " || ".join(original_img_messages)))
+            "ImageHash {} not useful for: {} || {}".format(str(image_hash), filename,
+                                                           " || ".join(original_img_messages)))
         return
 
     # Update wms
