@@ -537,12 +537,18 @@ async def process_source(filename, session: ClientSession):
                 filtered_projs.add(proj)
         result['available_projections'] = filtered_projs
 
-    # Filter alias projections
+    # Filter alias projections of 'EPSG:3857'
+    epsg_3857_aliases = set(['EPSG:{}'.format(epsg) for epsg in [900913, 3587, 54004, 41001, 102113, 102100, 3785]])
     if 'EPSG:3857' in result['available_projections']:
-        for epsg in [900913, 3587, 54004, 41001, 102113, 102100, 3785]:
-            epsg_str = 'EPSG:{}'.format(epsg)
-            if epsg_str in result['available_projections']:
-                result['available_projections'].remove(epsg_str)
+        for epsg in epsg_3857_aliases:
+            if epsg in result['available_projections']:
+                result['available_projections'].remove(epsg)
+    # If EPSG:3857 is not present, but multiple alias, keep only one alias:
+    if 'EPSG:3857' not in result['available_projections']:
+        alias_projs = [proj for proj in result['available_projections'] if proj in epsg_3857_aliases]
+        if len(alias_projs) > 1:
+            for proj in alias_projs[1:]:
+                result['available_projections'].remove(proj)
 
     # Check if only formatting has changes
     url_has_changed = not compare_urls(source['properties']['url'], result['url'])
