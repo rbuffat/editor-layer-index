@@ -52,7 +52,7 @@ jobs:
           cp -r site deploy
           cp *.md deploy
           cp *json deploy
-          cp LICENCE deploy
+          cp LICENSE deploy
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.7.1
