@@ -26,6 +26,9 @@ jobs:
           python -m pip install -U pip wheel
           python -m pip install -r requirements.txt
 
+      - name: Basic check
+        run: find sources -name \*.geojson | xargs python scripts/check.py
+
       - name: Delete old imagery files
         run: make clean
 
