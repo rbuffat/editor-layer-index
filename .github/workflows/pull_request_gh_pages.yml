@@ -1,0 +1,16 @@
+name: Check PR gh-pages
+
+on:
+  pull_request:
+    branches:
+      - gh-pages
+
+jobs:
+  check:
+    name: Check gh-pages
+    runs-on: [ubuntu-20.04]
+    steps:
+      - name: Warn PR on gh-pages instead of develop
+        run: | 
+          echo "Pull requests should be targeted against develop and not gh-pages"
+          exit 1
