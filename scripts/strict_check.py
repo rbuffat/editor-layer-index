@@ -701,7 +701,7 @@ def check_tms(source, info_msgs, warning_msgs, error_msgs):
 
 logging.info(f"arguments.path: {arguments.path}")
 for filename in arguments.path:
-    logging.info(f"file: {filename} exists: {os.path.exists(filename)})
+    logging.info(f"file: {filename} exists: {os.path.exists(filename)}")
 
     if not filename.lower()[-8:] == ".geojson":
         logger.debug("{} is not a geojson file, skip".format(filename))
