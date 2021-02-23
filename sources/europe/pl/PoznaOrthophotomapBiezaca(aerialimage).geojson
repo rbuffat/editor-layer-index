@@ -11,7 +11,7 @@
         "id": "poznan-ortofotomapaBiezaca",
         "country_code": "PL",
         "best": true,
-        "start_date": "2018",
+        "start_date": "2015",
         "available_projections": [
             "CRS:84",
             "EPSG:2177",
