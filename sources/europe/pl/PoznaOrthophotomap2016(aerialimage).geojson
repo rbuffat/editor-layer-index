@@ -18,7 +18,7 @@
         "attribution": {
             "text": "Zarząd Geodezji i Katastru Miejskiego GEOPOZ"
         },
-        "max_zoom": 23,
+        "max_zoom": 10,
         "category": "historicphoto"
     },
     "geometry": {
